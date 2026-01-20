@@ -3,6 +3,7 @@ from circleshape import *
 from constants import *
 from logger import log_event
 import random
+from player import *
 
 class Asteroid(CircleShape):
     def __init__(self, x, y, radius):
@@ -14,9 +15,10 @@ class Asteroid(CircleShape):
     def update(self, dt):
         self.position += self.velocity * dt
 
-    def split(self):
+    def split(self, player):
         self.kill()
         if self.radius <= ASTEROID_MIN_RADIUS:
+            player.score += 3
             return
         
         log_event("asteroid_split")
@@ -28,4 +30,9 @@ class Asteroid(CircleShape):
         second_asteroid = Asteroid(self.position.x, self.position.y, new_radius)
         first_asteroid.velocity = first_new * 1.2
         second_asteroid.velocity = second_new * 1.2
+
+        if new_radius == ASTEROID_MIN_RADIUS:
+            player.score += 2
+        else:
+            player.score += 1
 
